@@ -15,6 +15,12 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 
+//=================================================公共组件引入=================================================
+import DialogCommon from '@/components/Dialog/dialog-common.vue'
+import TableCommon from '@/components/Table/table-common.vue'
+import TableColumnCommon from '@/components/Table/table-column-common.vue'
+import Pagination from '@/components/Pagination'
+
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
@@ -32,6 +38,17 @@ if (process.env.NODE_ENV === 'production') {
 Vue.use(ElementUI, { locale })
 // 如果想要中文版 element-ui，按如下方式声明
 // Vue.use(ElementUI)
+
+//*********************全局注册组件 BEGIN***************************** */
+Vue.component('dialog-common', DialogCommon)
+Vue.component('table-common', TableCommon)
+Vue.component('table-column-common', TableColumnCommon)
+Vue.component('Pagination', Pagination)
+
+
+
+
+//*********************全局注册组件 END***************************** */
 
 Vue.config.productionTip = false
 

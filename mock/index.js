@@ -6,8 +6,12 @@ const table = require('./table')
 const demandManagement = require('./demandManagement')
 const productInformation = require('./productInformation')
 const projectInformation = require('./projectInformation')
+const beDevelopedList = require('./beDevelopedList')
+const beTestedList = require('./beTestedList')
+const userInformation = require('./userInformation')
+const parameterSetting = require('./parameterSetting')
 
-const mocks = [...user, ...table, ...demandManagement, ...productInformation, ...projectInformation,...dashboard]
+const mocks = [...user, ...table, ...demandManagement, ...productInformation, ...projectInformation, ...beDevelopedList, ...beTestedList, ...userInformation, ...parameterSetting]
 
 // for front mock
 // please use it cautiously, it will redefine XMLHttpRequest,
