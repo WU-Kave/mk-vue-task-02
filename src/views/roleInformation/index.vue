@@ -6,18 +6,19 @@
     <!-- 操作栏 -->
 
     <!-- 表格 -->
-    <table-common :tableData="tableData" v-loading="tableLoading">
-      <table-column-common type="selection" width="60"></table-column-common>
-      <table-column-common prop="date" label="日期" width="180"></table-column-common>
-      <table-column-common prop="name" label="姓名" width="180"></table-column-common>
-      <table-column-common prop="address" label="地址"></table-column-common>
-    </table-common>
+    <base-table-common :tableData="tableData" v-loading="tableLoading">
+      <base-table-column-common type="selection" width="60"></base-table-column-common>
+      <base-table-column-common prop="date" label="日期" width="180"></base-table-column-common>
+      <base-table-column-common prop="name" label="姓名" width="180"></base-table-column-common>
+      <base-table-column-common prop="address" label="地址"></base-table-column-common>
+    </base-table-common>
 
     <!-- 分页 -->
     <Pagination v-show="true" :total="pageObj.total" :page.sync="pageObj.pageData.page" :limit.sync="pageObj.pageData.pageSize" @pagination="fetchData" />
 
     <!-- 弹框 -->
     <dialog-common v-model="dialogValue"></dialog-common>
+
   </div>
 </template>
 
