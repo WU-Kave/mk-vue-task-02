@@ -4,7 +4,7 @@
   </el-table>
 </template>
 
-  <script>
+<script>
 export default {
   name: 'table-common',
   props: {

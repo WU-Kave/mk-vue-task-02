@@ -19,6 +19,7 @@ import '@/permission' // permission control
 import DialogCommon from '@/components/Dialog/dialog-common.vue'
 import BseTableCommon from '@/components/table/base-table-common.vue'
 import BaseTableColumnCommon from '@/components/table/base-table-column-common.vue'
+// import BaseTableColumnCommon from '@/components/table/base-table-edit-del-button.vue'
 import Pagination from '@/components/Pagination'
 
 /**
