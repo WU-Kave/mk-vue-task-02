@@ -1,5 +1,5 @@
 <template>
-  <el-table-column :type="type" :label="label" :prop="prop" :width="width" :min-width="minWidth" show-overflow-tooltip>
+  <el-table-column :type="type" :label="label" :prop="prop" :width="width" :min-width="minWidth" :fixed="fixed" show-overflow-tooltip>
     <slot />
   </el-table-column>
 </template>
@@ -10,6 +10,10 @@ export default {
     type: {
       type: String,
       default: '',
+    },
+    fixed: {
+      type: String,
+      default: '', // [true, left, right]
     },
     label: {
       type: String,

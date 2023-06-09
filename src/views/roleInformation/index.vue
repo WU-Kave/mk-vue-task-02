@@ -4,6 +4,8 @@
     <!-- 条件筛选 -->
 
     <!-- 操作栏 -->
+    <el-button @click="handleAdd()" type="text" size="small">添加</el-button>
+    <el-button @click="handleDelete()" type="text" size="small">删除</el-button>
 
     <!-- 表格 -->
     <base-table-common :tableData="tableData" v-loading="tableLoading">
@@ -11,27 +13,41 @@
       <base-table-column-common prop="date" label="日期" width="180"></base-table-column-common>
       <base-table-column-common prop="name" label="姓名" width="180"></base-table-column-common>
       <base-table-column-common prop="address" label="地址"></base-table-column-common>
+
+      <base-table-column-common prop="address" label="地址"></base-table-column-common>
+
+      <base-table-column-common fixed="right" label="操作" width="100">
+        <template slot-scope="scope">
+          <el-button @click="handleUpdate(scope.row)" type="text" size="small">编辑</el-button>
+          <el-button @click="handleDelete(scope.row)" type="text" size="small">删除</el-button>
+        </template>
+      </base-table-column-common>
+
     </base-table-common>
 
     <!-- 分页 -->
-    <Pagination v-show="true" :total="pageObj.total" :page.sync="pageObj.pageData.page" :limit.sync="pageObj.pageData.pageSize" @pagination="fetchData" />
+    <Pagination :total="pageObj.total" :page.sync="pageObj.pageData.page" :limit.sync="pageObj.pageData.pageSize" @pagination="fetchData" />
 
     <!-- 弹框 -->
     <dialog-common v-model="dialogValue"></dialog-common>
-
   </div>
 </template>
 
 <script>
+import hanldeMixin from '@/components/Pagination/handle.js';
+import { mockData } from './mockData.js';
 export default {
+  mixins: [hanldeMixin],
   data() {
     return {
+      //dialog开关
       dialogValue: false,
+      //表单数组数据
       tableData: [],
+      //表单加载loading
       tableLoading: false,
       //分页对象
       pageObj: {
-        isShow: true,
         position: 'left', //分页组件位置
         total: 100,
         pageData: {
@@ -48,7 +64,7 @@ export default {
     // mock get data from network
     fetchData() {
       this.tableLoading = true
-      this.mockData()
+      mockData()
         .then(res => {
           this.tableData = res.data
           //TODO 处理分页信息，total应该由后端给值
@@ -59,56 +75,14 @@ export default {
           this.tableLoading = false
         })
     },
-    mockData() {
-      return new Promise(resolve => {
-        const tableData = [
-          {
-            date: '2016-05-02',
-            name: '王小虎1',
-            address: '上海市普陀区金沙江路 1518 弄',
-          },
-          {
-            date: '2016-05-04',
-            name: '王小虎2',
-            address: '上海市普陀区金沙江路 1517 弄',
-          },
-          {
-            date: '2016-05-01',
-            name: '王小虎3',
-            address: '上海市普陀区金沙江路 1519 弄',
-          },
-          {
-            date: '2016-05-03',
-            name: '王小虎4',
-            address: '上海市普陀区金沙江路 1516 弄',
-          },
-        ]
-        const res = {
-          code: 200,
-          data: tableData,
-          msg: 'success',
-        }
-        setTimeout(() => {
-          resolve(res)
-        }, 400)
-      })
+    //更新
+    handleUpdate() {
+      console.log(`handleUpdate`);
+      this.dialogValue = true;
     },
-    //分页处理
-    handlePageTotal(totalCount) {
-      this.pageObj.total = totalCount
-    },
-    //页码变化
-    handleCurrentChange(e) {
-      console.log('页码', e)
-      this.pageObj.page = e
-      // this.fetchData();
-    },
-    //条数变化
-    handleSizeChange(e) {
-      console.log('条数', e)
-      this.pageObj.size = e
-      this.pageObj.page = 1
-      // this.fetchData();
+    //删除
+    handleDelete() {
+      console.log(`handleDelete`)
     },
   },
 }
