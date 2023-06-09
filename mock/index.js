@@ -1,6 +1,6 @@
 const Mock = require('mockjs')
 const { param2Obj } = require('./utils')
-
+const dashboard = require('./dashboard')
 const user = require('./user')
 const table = require('./table')
 const demandManagement = require('./demandManagement')
