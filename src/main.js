@@ -15,6 +15,9 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 
+// import CummonDialog from '@/components/Dialog/CummonDialog'
+import DialogCommon from '@/components/Dialog/dialog-common'
+
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
@@ -32,6 +35,14 @@ if (process.env.NODE_ENV === 'production') {
 Vue.use(ElementUI, { locale })
 // 如果想要中文版 element-ui，按如下方式声明
 // Vue.use(ElementUI)
+
+//*********************全局注册组件 BEGIN***************************** */
+Vue.use(DialogCommon)
+
+
+
+
+//*********************全局注册组件 END***************************** */
 
 Vue.config.productionTip = false
 
