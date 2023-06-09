@@ -7,8 +7,10 @@
     </span>
   </el-dialog>
 </template>
-  <script>
+
+<script>
 export default {
+  name: 'dialog-common',
   props: {
     top: {
       type: String,

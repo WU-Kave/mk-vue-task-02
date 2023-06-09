@@ -15,8 +15,11 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 
-// import CummonDialog from '@/components/Dialog/CummonDialog'
-import DialogCommon from '@/components/Dialog/dialog-common'
+//=================================================公共组件引入=================================================
+import DialogCommon from '@/components/Dialog/dialog-common.vue'
+import TableCommon from '@/components/Table/table-common.vue'
+import TableColumnCommon from '@/components/Table/table-column-common.vue'
+import Pagination from '@/components/Pagination'
 
 /**
  * If you don't want to use mock-server
@@ -37,7 +40,10 @@ Vue.use(ElementUI, { locale })
 // Vue.use(ElementUI)
 
 //*********************全局注册组件 BEGIN***************************** */
-Vue.use(DialogCommon)
+Vue.component('dialog-common', DialogCommon)
+Vue.component('table-common', TableCommon)
+Vue.component('table-column-common', TableColumnCommon)
+Vue.component('Pagination', Pagination)
 
 
 
