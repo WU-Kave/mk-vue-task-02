@@ -1,5 +1,5 @@
 <template>
-  <el-table-column :type="type" :label="label" :prop="prop" :width="width" :min-width="minWidth" show-overflow-tooltip >
+  <el-table-column :type="type" :label="label" :prop="prop" :width="width" :min-width="minWidth" show-overflow-tooltip>
     <slot />
   </el-table-column>
 </template>
@@ -30,7 +30,7 @@ export default {
 }
 </script>
   
-  <style scoped>
+<style scoped>
 </style>
   
   
