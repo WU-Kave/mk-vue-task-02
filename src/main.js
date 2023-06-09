@@ -17,8 +17,8 @@ import '@/permission' // permission control
 
 //=================================================公共组件引入=================================================
 import DialogCommon from '@/components/Dialog/dialog-common.vue'
-import TableCommon from '@/components/Table/table-common.vue'
-import TableColumnCommon from '@/components/Table/table-column-common.vue'
+import BseTableCommon from '@/components/table/base-table-common.vue'
+import BaseTableColumnCommon from '@/components/table/base-table-column-common.vue'
 import Pagination from '@/components/Pagination'
 
 /**
@@ -41,8 +41,8 @@ Vue.use(ElementUI, { locale })
 
 //*********************全局注册组件 BEGIN***************************** */
 Vue.component('dialog-common', DialogCommon)
-Vue.component('table-common', TableCommon)
-Vue.component('table-column-common', TableColumnCommon)
+Vue.component('base-table-common', BseTableCommon)
+Vue.component('base-table-column-common', BaseTableColumnCommon)
 Vue.component('Pagination', Pagination)
 
 
