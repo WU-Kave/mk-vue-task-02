@@ -11,7 +11,7 @@ const beTestedList = require('./beTestedList')
 const userInformation = require('./userInformation')
 const parameterSetting = require('./parameterSetting')
 
-const mocks = [...user, ...table, ...demandManagement, ...productInformation, ...projectInformation, ...beDevelopedList, ...beTestedList, ...userInformation, ...parameterSetting]
+const mocks = [...dashboard,...user, ...table, ...demandManagement, ...productInformation, ...projectInformation, ...beDevelopedList, ...beTestedList, ...userInformation, ...parameterSetting]
 
 // for front mock
 // please use it cautiously, it will redefine XMLHttpRequest,
