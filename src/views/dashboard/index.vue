@@ -7,6 +7,47 @@
         <span>欢迎，{{ userName }}</span>
       </div>
     </el-header>
+     <!-- 数据统计图 -->
+     <el-main>
+      <div class="chart-header">
+        <h3 class="title">数据统计</h3>
+        <el-radio-group v-model="chartType" size="mini" @change="handleChangeChartType">
+          <el-radio-button label="today">今日</el-radio-button>
+          <el-radio-button label="week">本周</el-radio-button>
+          <el-radio-button label="month">本月</el-radio-button>
+        </el-radio-group>
+      </div>
+      <el-card class="chart" shadow="hover">
+        
+          <!-- <el-chart :data="chartData" :settings="chartSettings" /> -->
+          <el-row :gutter="200" class="panel">
+            <el-col :span="8">
+              <el-card body-style>
+                <div></div>
+                <div>
+                <div>全部任务</div>
+                <div>{{ todoList.length }}</div>
+              </div>
+              </el-card>
+            
+            </el-col>
+            <el-col :span="8">
+              <el-card body-style>
+                <div>待办事项</div>
+                <div>{{ todoList.filter(item=>!item.done).length }}</div>
+              </el-card>
+            </el-col>
+            <el-col :span="8">
+              <el-card body-style>
+                <div>已完成事项</div>
+                <div>{{ todoList.filter(item=>item.done).length }}</div>
+            </el-card>
+            </el-col>
+          </el-row>
+         
+        
+      </el-card>
+    </el-main>
     <el-container style="height: auto">
       <!-- 左侧菜单栏 -->
       <el-aside width="200px">
@@ -166,23 +207,6 @@
         </el-scrollbar>
       </el-card>
     </el-main> -->
-
-    <!-- 数据统计图 -->
-    <el-main>
-      <div class="chart-header">
-        <h3 class="title">数据统计</h3>
-        <el-radio-group v-model="chartType" size="mini" @change="handleChangeChartType">
-          <el-radio-button label="today">今日</el-radio-button>
-          <el-radio-button label="week">本周</el-radio-button>
-          <el-radio-button label="month">本月</el-radio-button>
-        </el-radio-group>
-      </div>
-      <el-card class="chart" shadow="hover">
-        <div class="chart-container">
-          <!-- <el-chart :data="chartData" :settings="chartSettings" /> -->
-        </div>
-      </el-card>
-    </el-main>
   </div>
 </template>
 
@@ -198,6 +222,11 @@ export default {
   name: 'Dashboard',
   data() {
     return {
+      //数字翻牌器
+       allTasks: {number:[100],
+       content:'{nt}个'},
+        unfinishedTasks: 50,
+        finishedTasks: 50,
       dialogVisible: false,
       currentRow: {},
       filteredTodoList: [],
@@ -262,12 +291,15 @@ export default {
 
       // 将工作表添加到工作簿中
       xlsx.utils.book_append_sheet(wb, ws, 'Sheet1')
+       // 将工作簿转化为二进制流文件并保存至本地(简便易懂)
+       let fileName = val.title+'.xlsx';
+      xlsx.writeFile(wb, fileName);
 
-      // 将工作簿转换为二进制数据
-      let wbout = xlsx.write(wb, { bookType: 'xlsx', type: 'binary' })
+      // // 将工作簿转换为二进制数据
+      // let wbout = xlsx.write(wb, { bookType: 'xlsx', type: 'binary' })
 
-      // 使用 file-saver 将二进制数据导出为文件
-      saveAs(new Blob([this.s2ab(wbout)], { type: 'application/octet-stream' }), 'data.xlsx')
+      // // 使用 file-saver 将二进制数据导出为文件
+      // saveAs(new Blob([this.s2ab(wbout)], { type: 'application/octet-stream' }), val.title+'.xlsx')
     },
 
     // 定义一个辅助函数，用于将字符串转换为 ArrayBuffer 对象
@@ -419,7 +451,7 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped >
 .dashboard {
   display: flex;
   flex-direction: column;
@@ -508,6 +540,12 @@ export default {
 }
 .chart {
   padding: 20px;
-  min-height: 360px;
+  min-height: auto;
 }
+.panel>.el-col{
+    text-align: center;
+    font-size: 22px;
+    font-weight: bolder;
+  }
+
 </style>
