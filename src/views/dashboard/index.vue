@@ -7,8 +7,8 @@
         <span>欢迎，{{ userName }}</span>
       </div>
     </el-header>
-     <!-- 数据统计图 -->
-     <el-main>
+    <!-- 数据统计图 -->
+    <el-main>
       <div class="chart-header">
         <h3 class="title">数据统计</h3>
         <el-radio-group v-model="chartType" size="mini" @change="handleChangeChartType">
@@ -18,34 +18,36 @@
         </el-radio-group>
       </div>
       <el-card class="chart" shadow="hover">
-        
-          <!-- <el-chart :data="chartData" :settings="chartSettings" /> -->
-          <el-row :gutter="200" class="panel">
-            <el-col :span="8">
-              <el-card body-style>
-                <div></div>
-                <div>
+        <!-- <el-chart :data="chartData" :settings="chartSettings" /> -->
+        <el-row :gutter="200" class="panel" v-show="chartType === 'today'">
+          <el-col :span="8">
+            <el-card body-style>
+              <div></div>
+              <div>
                 <div>全部任务</div>
                 <div>{{ todoList.length }}</div>
               </div>
-              </el-card>
-            
-            </el-col>
-            <el-col :span="8">
-              <el-card body-style>
-                <div>待办事项</div>
-                <div>{{ todoList.filter(item=>!item.done).length }}</div>
-              </el-card>
-            </el-col>
-            <el-col :span="8">
-              <el-card body-style>
-                <div>已完成事项</div>
-                <div>{{ todoList.filter(item=>item.done).length }}</div>
             </el-card>
-            </el-col>
-          </el-row>
-         
-        
+          </el-col>
+          <el-col :span="8">
+            <el-card body-style>
+              <div>待办事项</div>
+              <div>{{ todoList.filter(item => !item.done).length }}</div>
+            </el-card>
+          </el-col>
+          <el-col :span="8">
+            <el-card body-style>
+              <div>已完成事项</div>
+              <div>{{ todoList.filter(item => item.done).length }}</div>
+            </el-card>
+          </el-col>
+        </el-row>
+        <!-- 周 - 月 -->
+        <el-row :gutter="200" class="panel" v-show="chartType !== 'today'">
+          <el-col :span="24">
+            <div id="workSummaryChart" style="height: 300px"></div>
+          </el-col>
+        </el-row>
       </el-card>
     </el-main>
     <el-container style="height: auto">
@@ -99,21 +101,20 @@
         </el-card>
       </el-main>
     </el-container>
-     <!-- 明细对话框 -->
-     <el-dialog :visible.sync="dialogVisible" width="30%" :before-close="beforeClose">
+    <!-- 明细对话框 -->
+    <el-dialog :visible.sync="dialogVisible" width="30%" :before-close="beforeClose">
       <span slot="title">{{ currentRow.title }}的详细信息</span>
       <el-form label-position="top">
         <el-form-item label="任务名称：">{{ currentRow.title }}</el-form-item>
         <el-form-item label="任务内容：">{{ currentRow.content }}</el-form-item>
         <el-form-item label="任务创建时间：">{{ currentRow.createTime }}</el-form-item>
         <el-form-item label="任务更新时间：">{{ currentRow.updateTime }}</el-form-item>
-        <el-form-item label="任务是否完成：">{{ currentRow.done?'已完成':'未完成' }}</el-form-item>
+        <el-form-item label="任务是否完成：">{{ currentRow.done ? '已完成' : '未完成' }}</el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button type="primary" @click="dialogVisible = false">关闭</el-button>
       </div>
     </el-dialog>
-
 
     <!-- 待办事项列表 -->
     <!-- <el-main>
@@ -214,19 +215,19 @@
 import { saveAs } from 'file-saver'
 import * as xlsx from 'xlsx'
 import { mapGetters } from 'vuex'
-import { fetchTodoList, completeTodoItem, deleteTodoItem } from '@/api/todo'
+import { fetchTodoList, completeTodoItem, deleteTodoItem, getWeeklyWorkloadSummary, getMonthlyWorkloadSummary } from '@/api/todo'
 import { fetchDoneList, deleteDoneItem } from '@/api/done'
 import { getMockChartData } from '@/utils/mockData'
+import * as echarts from 'echarts'
 
 export default {
   name: 'Dashboard',
   data() {
     return {
       //数字翻牌器
-       allTasks: {number:[100],
-       content:'{nt}个'},
-        unfinishedTasks: 50,
-        finishedTasks: 50,
+      allTasks: { number: [100], content: '{nt}个' },
+      unfinishedTasks: 50,
+      finishedTasks: 50,
       dialogVisible: false,
       currentRow: {},
       filteredTodoList: [],
@@ -237,6 +238,17 @@ export default {
       doneList: [],
       chartData: [],
       chartType: 'today',
+      myChart: null,
+      chartOptions: {
+        xAxis: {
+          type: 'category',
+          data: undefined,
+        },
+        yAxis: {
+          type: 'value',
+        },
+        series: undefined,
+      },
       chartSettings: {
         height: 300,
         margin: [16, 16],
@@ -256,7 +268,6 @@ export default {
     }
   },
   created() {
-    console.log('created测试数据')
     // console.log(this.filteredTodoList)
     this.filteredTodoList = this.todoList
   },
@@ -269,31 +280,31 @@ export default {
   },
   methods: {
     //查看表格每行内容明细
-    handleOpenDetail(val){
-      this.currentRow=val;
-      this.dialogVisible = true;
+    handleOpenDetail(val) {
+      this.currentRow = val
+      this.dialogVisible = true
     },
-     // 关闭对话框前清空数据
-     beforeClose(done) {
-      this.currentRow = {};
-      done();
+    // 关闭对话框前清空数据
+    beforeClose(done) {
+      this.currentRow = {}
+      done()
     },
     //导出每行内容的方法
     exportRow(val) {
-      console.log('测试xlsx',xlsx)
+      console.log('测试xlsx', xlsx)
       //1,将指定的数据转换为二维数组
       console.log(val)
-      let data = Object.keys(val).map(key=>[key,val[key]])
-      console.log('data数据测试',data)
+      let data = Object.keys(val).map(key => [key, val[key]])
+      console.log('data数据测试', data)
       //2，创建工作簿和工作表对象
       let wb = xlsx.utils.book_new()
       let ws = xlsx.utils.aoa_to_sheet(data)
 
       // 将工作表添加到工作簿中
       xlsx.utils.book_append_sheet(wb, ws, 'Sheet1')
-       // 将工作簿转化为二进制流文件并保存至本地(简便易懂)
-       let fileName = val.title+'.xlsx';
-      xlsx.writeFile(wb, fileName);
+      // 将工作簿转化为二进制流文件并保存至本地(简便易懂)
+      let fileName = val.title + '.xlsx'
+      xlsx.writeFile(wb, fileName)
 
       // // 将工作簿转换为二进制数据
       // let wbout = xlsx.write(wb, { bookType: 'xlsx', type: 'binary' })
@@ -328,19 +339,13 @@ export default {
     },
     //格式化表格中任务是否完成的方法
     formatterDone(value) {
-      console.log(value)
-      console.log('formatter方法')
       return value.done ? '是' : '否'
     },
     //
     async fetchTodoList() {
-      console.log('断点')
-      console.log(await fetchTodoList())
       const { data } = await fetchTodoList()
-      console.log(data)
       this.todoList = data.items
       // console.log(this.todoList)
-      console.log('jiezhi')
       this.handleMenuSelect('0')
       // fetchTodoList().then((res) => {
       //     console.log("断点2")
@@ -431,9 +436,24 @@ export default {
           })
       }
     },
-    handleChangeChartType(type) {
-      console.log('chart type changed:', type)
-      this.fetchChartData()
+    async handleChangeChartType(type) {
+      // console.log('chart type changed:', type)
+      if (type === 'today') {
+        this.fetchChartData()
+      } else {
+        let data
+        if (type === 'week') {
+          const result = await getWeeklyWorkloadSummary()
+          data = result.data
+        } else if (type === 'month') {
+          const result = await getMonthlyWorkloadSummary()
+          data = result.data
+        }
+        this.chartOptions.xAxis.data = data.xAxis
+        this.chartOptions.series = data.chartSeries
+        console.log(this.chartOptions)
+        this.myChart.setOption(this.chartOptions)
+      }
     },
     handleItemChange(id) {
       // 更新事项状态，包括选中和取消选中
@@ -442,16 +462,28 @@ export default {
       const itemIndex = list.findIndex(item => item.id === id)
       list[itemIndex].checked = !list[itemIndex].checked
     },
+    // 初始化图标
+    initChart() {
+      // 基于准备好的dom，初始化echarts实例
+      // let myChart = echarts.init(document.getElementById('workSummaryChart'))
+      this.myChart = echarts.init(document.getElementById('workSummaryChart'))
+      // 绘制图表
+      this.myChart.setOption(this.chartOptions)
+    },
   },
   mounted() {
     this.fetchTodoList()
     // this.fetchDoneList()
     // this.fetchChartData()
+    this.initChart()
+  },
+  updated() {
+    this.myChart.resize()
   },
 }
 </script>
 
-<style scoped >
+<style scoped>
 .dashboard {
   display: flex;
   flex-direction: column;
@@ -542,10 +574,9 @@ export default {
   padding: 20px;
   min-height: auto;
 }
-.panel>.el-col{
-    text-align: center;
-    font-size: 22px;
-    font-weight: bolder;
-  }
-
+.panel > .el-col {
+  text-align: center;
+  font-size: 22px;
+  font-weight: bolder;
+}
 </style>

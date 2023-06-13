@@ -17,6 +17,7 @@
     "@jiaminghi/data-view": "^2.10.0",
     "axios": "0.18.1",
     "core-js": "3.6.5",
+    "echarts": "^5.4.2",
     "element-ui": "2.15.7",
     "file-saver": "^2.0.5",
     "js-cookie": "2.2.0",
