@@ -81,14 +81,12 @@ export default {
   },
   methods: {
     handleSizeChange(val) {
-      console.log("size change")
       if (this.currentPage * val > this.total) {
         this.currentPage = 1;
       }
       this.$emit("pagination", { page: this.currentPage, limit: val });
     },
     handleCurrentChange(val) {
-      console.log("current page change")
       this.$emit("pagination", { page: val, limit: this.pageSize });
     },
   },
